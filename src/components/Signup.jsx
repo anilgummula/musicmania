@@ -31,20 +31,20 @@ const Signup = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-      if(!username || !email || !password || !type || !mobile){
+      if(!username || !email || !password){
         return handleError('fields are required');
       }
 
       setLoading(true);
       try {
           // const url ="http://localhost:3000/auth/register";
-        const url = `${API_BASE_URL}/auth/register`;
+        const url = `${API_BASE_URL}/auth/signup`;
         const response = await fetch(url,{
             method : "POST",
             headers : {
                 'Content-Type' : 'application/json'
             },
-            body : JSON.stringify({username,email,type,password})
+            body : JSON.stringify({username,email,password})
         });
         const result = await response.json();
         const {success ,message ,error } = result;
@@ -121,8 +121,8 @@ const Signup = () => {
                 onChange={(e)=>setPassword(e.target.value)}
             />
             <p className='mt-5 flex'>show password
-           <input type="checkbox" className='flex mx-5' onClick={showpassClicked} />
-                 </p>
+                <input type="checkbox" className='flex mx-5' onClick={showpassClicked} />
+            </p>
             <a
               href="#"
               className="text-xs text-gray-500 hover:text-gray-900 text-end w-full mt-2"

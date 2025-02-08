@@ -12,6 +12,17 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
 
+    const [showpass,setShowpass] = useState(false);
+        
+    const showpassClicked = (e)=>{
+        if(showpass){
+            setShowpass(false);
+        }
+        else{
+            setShowpass(true);
+        }
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!email || !password) {
@@ -29,7 +40,7 @@ const Login = () => {
                 body: JSON.stringify({ email, password }),
             });
             const result = await response.json();
-            const { success, message, jwtToken, username, type, error } = result;
+            const { success, message, jwtToken, username, error } = result;
 
             setLoading(false);
             if (success) {
@@ -77,10 +88,13 @@ const Login = () => {
                         <label className="block text-gray-800 font-semibold text-sm">Password</label>
                         <input
                             className="mt-1 w-full px-4 py-2 rounded-lg bg-white/50 border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
-                            type="password"
+                            type={showpass? "text" : "password"}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
+                        <p className='mt-5 flex'>show password
+                            <input type="checkbox" className='flex mx-5' onClick={showpassClicked} />
+                        </p>
                         <a href="#" className="text-xs text-gray-600 hover:text-gray-900 mt-2 block text-end">
                             Forgot Password?
                         </a>
