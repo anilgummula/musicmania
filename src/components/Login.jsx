@@ -5,7 +5,7 @@ import { AllContext } from "./AllContext";
 
 const Login = () => {
     const API_BASE_URL = import.meta.env.VITE_APP_API_BASE_URL;
-    const { setLoggedIn, setLoggedInUser, setType } = useContext(AllContext);
+    const { setLoggedIn, setLoggedInUser } = useContext(AllContext);
     const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
@@ -31,6 +31,7 @@ const Login = () => {
 
         setLoading(true);
         try {
+            // const url = `http:localhost:3000/auth/login`;
             const url = `${API_BASE_URL}/auth/login`;
             const response = await fetch(url, {
                 method: "POST",
@@ -47,8 +48,6 @@ const Login = () => {
                 handleSuccess(message);
                 localStorage.setItem("token", jwtToken);
                 localStorage.setItem("loggedInUser", username);
-                localStorage.setItem("type", type);
-                setType(type);
                 setLoggedIn(true);
                 setLoggedInUser(username);
                 setTimeout(() => {
