@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { FaSearch, FaDownload, FaPlay, FaPause, FaForward, FaBackward } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-export default function HomePage() {
+export default function HomePage2() {
   const [search, setSearch] = useState("");
   const [songs, setSongs] = useState([]);
   const [filteredSongs, setFilteredSongs] = useState([]);

@@ -1,7 +1,9 @@
 import React from "react";
 import { FaPlay, FaSearch, FaUpload, FaDownload } from "react-icons/fa";
 import { Link, NavLink } from "react-router-dom";
-export default function Home() {
+
+
+export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white text-gray-900 mt-20">
       {/* Hero Section */}

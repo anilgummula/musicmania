@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { AllContext } from './AllContext'
 import Landingpage from './LandingPage'
-import HomePage from './Homepage';
+import HomePage from './HomePage';
 
 const Home = () => {
     const {loggedIn} = useContext(AllContext);
