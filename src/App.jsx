@@ -8,6 +8,7 @@ import Uploads from './components/Uploads';
 import Downloads from './components/Downloads';
 import Signup from './components/Signup';
 import Login from './components/Login';
+import Profile from './components/Profile';
 
 const router = createBrowserRouter([
     {
@@ -46,6 +47,16 @@ const router = createBrowserRouter([
             <div>
                 <NavBar/>
                 <Login/>
+                <Footer/>
+            </div>
+        )
+    },
+    {
+        path:"/Profile",
+        element:(
+            <div>
+                <NavBar/>
+                <Profile/>
                 <Footer/>
             </div>
         )
