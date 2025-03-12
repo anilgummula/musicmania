@@ -1,23 +1,30 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { handleError, handleSuccess } from "../utils";
 
 export default function Uploads() {
-    const username = localStorage.getItem("loggedInUser");
-    const [artist, setArtist] = useState(username);
-  const [songTitle, setSongTitle] = useState("");
-  const [file, setFile] = useState(null);
-  const [preview, setPreview] = useState("");
-  const fileInputRef = useRef(null); // Reference for file input
-  const [loading,setLoading] = useState(false);
-
-  const handleFileChange = (event) => {
-    const uploadedFile = event.target.files[0];
-    if (uploadedFile) {
-      setFile(uploadedFile);
-      setPreview(URL.createObjectURL(uploadedFile));
-    }
-  };
+    const [songTitle, setSongTitle] = useState("");
+    const [artist, setArtist] = useState("Unknown");
+    const [file, setFile] = useState(null);
+    const [preview, setPreview] = useState("");
+    const fileInputRef = useRef(null); // Reference for file input
+    const [loading,setLoading] = useState(false);
+    
+    const handleFileChange = (event) => {
+        const uploadedFile = event.target.files[0];
+        if (uploadedFile) {
+            setFile(uploadedFile);
+            setPreview(URL.createObjectURL(uploadedFile));
+        }
+    };
+    
+    
+    useEffect(()=>{
+      const username = localStorage.getItem("loggedInUser");
+    setArtist(username);
+    console.log(username);
+    
+  },[])
   
 
   const handleUpload = async (e) => {
@@ -30,7 +37,7 @@ export default function Uploads() {
 
     const formData = new FormData();
     formData.append("title", songTitle);
-    formData.append("artist", username);
+    formData.append("artist", artist);
     formData.append("file", file);
 
     const token =  localStorage.getItem("token");
