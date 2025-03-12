@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { FaCloudUploadAlt } from "react-icons/fa";
+import { handleError, handleSuccess } from "../utils";
 
 export default function Uploads() {
   const [songTitle, setSongTitle] = useState("");
@@ -7,6 +8,7 @@ export default function Uploads() {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState("");
   const fileInputRef = useRef(null); // Reference for file input
+  const [loading,setLoading] = useState(false);
 
   const handleFileChange = (event) => {
     const uploadedFile = event.target.files[0];
@@ -15,10 +17,15 @@ export default function Uploads() {
       setPreview(URL.createObjectURL(uploadedFile));
     }
   };
+  
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    if (!file) return alert("Please select a file");
+    setLoading(true);
+    if (!file){
+        setLoading(false);
+        return handleError("Please select a file");
+    } 
 
     const formData = new FormData();
     formData.append("title", songTitle);
@@ -36,18 +43,19 @@ export default function Uploads() {
     });
 
     if (response.ok) {
-      alert("Song uploaded successfully!");
+      handleSuccess("Song uploaded successfully!");
       setSongTitle("");
       setArtist("");
       setFile(null);
       setPreview("");
     } else {
-      alert("Upload failed. Please try again.");
+      handleError("Upload failed. Please try again.");
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center text-gray-500 px-6">
+    <div className="min-h-screen flex flex-col items-center justify-center text-gray-500 px-6 mt-10">
       <h1 className="text-4xl font-bold mb-6">Upload Your Song</h1>
       <form onSubmit={handleUpload} className=" p-8 rounded-xl shadow-lg w-full max-w-md text-center">
         <label className="block text-left text-gray-800 mb-2 font-semibold">Song Title:</label>
@@ -95,9 +103,10 @@ export default function Uploads() {
 
         <button
           type="submit"
-          className="mt-6 bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-lg text-lg font-semibold shadow-md w-full transition-transform hover:scale-105"
+          className="mt-6 bg-teal-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-lg text-lg font-semibold shadow-md w-full transition-transform hover:scale-105 "
+          disabled={loading}
         >
-          Upload Song
+          {loading ? 'Uploading...' : 'Upload'}
         </button>
       </form>
     </div>

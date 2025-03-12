@@ -10,11 +10,11 @@ export default function HomePage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState("0:00");
-  const [durations, setDurations] = useState({}); // Store duration of each song
-  const audioRef = useRef(null);
+  const [duration, setDuration] = useState("0:00"); // Fixed missing duration
+  const [durations, setDurations] = useState({});
+  const audioRef = useRef(new Audio());
   const navigate = useNavigate();
 
-  // Fetch songs and preload their durations
   useEffect(() => {
     fetch(`${import.meta.env.VITE_APP_API_BASE_URL}/songs`)
       .then((res) => res.json())
@@ -22,16 +22,17 @@ export default function HomePage() {
         setSongs(data);
         setFilteredSongs(data);
 
-        // Load song durations
+        // Load song durations properly
         const durationMap = {};
-        for (const song of data) {
-          durationMap[song._id] = await getSongDuration(song.fileUrl);
-        }
+        await Promise.all(
+          data.map(async (song) => {
+            durationMap[song._id] = await getSongDuration(song.fileUrl);
+          })
+        );
         setDurations(durationMap);
       });
   }, []);
 
-  // Function to get duration of a song without playing it
   const getSongDuration = (fileUrl) => {
     return new Promise((resolve) => {
       const tempAudio = new Audio(fileUrl);
@@ -41,15 +42,36 @@ export default function HomePage() {
     });
   };
 
-  // Update filtered songs when search input changes
   useEffect(() => {
     setFilteredSongs(
-      songs.filter((song) =>
-        song.title.toLowerCase().includes(search.toLowerCase()) ||
-        song.artist.toLowerCase().includes(search.toLowerCase())
+      songs.filter(
+        (song) =>
+          song.title.toLowerCase().includes(search.toLowerCase()) ||
+          song.artist.toLowerCase().includes(search.toLowerCase())
       )
     );
   }, [search, songs]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.addEventListener("timeupdate", updateProgress);
+      audioRef.current.addEventListener("ended", handleNext);
+    }
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.removeEventListener("timeupdate", updateProgress);
+        audioRef.current.removeEventListener("ended", handleNext);
+      }
+    };
+  }, [playingIndex]);
+
+  const updateProgress = () => {
+    if (audioRef.current) {
+      const progressPercent = (audioRef.current.currentTime / audioRef.current.duration) * 100;
+      setProgress(progressPercent);
+      setCurrentTime(formatTime(audioRef.current.currentTime));
+    }
+  };
 
   const formatTime = (time) => {
     if (!time || isNaN(time)) return "0:00";
@@ -70,7 +92,13 @@ export default function HomePage() {
       setPlayingIndex(index);
       setIsPlaying(true);
       audioRef.current.src = filteredSongs[index].fileUrl;
+      audioRef.current.load();
       audioRef.current.play();
+
+      // Set duration properly
+      audioRef.current.onloadedmetadata = () => {
+        setDuration(formatTime(audioRef.current.duration));
+      };
     }
   };
 
@@ -149,43 +177,52 @@ export default function HomePage() {
               </div>
             ))
           ) : (
-            <div className="flex mx-auto justify-center   font-bold text-2xl text-center text-yellow-500">Loading.....</div>
+            <div className="flex mx-auto justify-center font-bold text-2xl text-center text-yellow-500">
+              Loading...
+            </div>
           )}
         </div>
       </section>
 
       {playingIndex !== null && (
-        <div className="fixed bottom-0 left-0 w-full bg-gray-900 text-white p-5 flex flex-col items-center shadow-2xl">
-          <h3 className="text-lg font-semibold">
-            {filteredSongs[playingIndex]?.title} - {filteredSongs[playingIndex]?.artist}
-          </h3>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={progress}
-            onChange={handleSeek}
-            className="w-full my-2 accent-purple-500"
-          />
-          <div className="flex justify-between items-center w-full px-4">
-            <span className="text-gray-300 text-sm">{currentTime}</span>
-            <div className="flex gap-5">
-              <button onClick={handlePrev} className="bg-gray-700 p-3 rounded-full">
-                <FaBackward size={20} />
-              </button>
-              <button onClick={() => handlePlay(playingIndex)} className="bg-purple-500 hover:bg-purple-600 p-3 rounded-full">
-                {isPlaying ? <FaPause size={24} /> : <FaPlay size={24} />}
-              </button>
-              <button onClick={handleNext} className="bg-gray-700 p-3 rounded-full">
-                <FaForward size={20} />
-              </button>
-            </div>
-            <span className="text-gray-300 text-sm">{durations[filteredSongs[playingIndex]?._id] || "0:00"}</span>
-          </div>
-        </div>
-      )}
+  <div className="fixed bottom-0 left-0 w-full bg-gray-900 text-white p-5 flex flex-col items-center shadow-2xl">
+    <h3 className="text-lg font-semibold">
+      {filteredSongs[playingIndex]?.title} - {filteredSongs[playingIndex]?.artist}
+    </h3>
+    
+    {/* Display current time and total duration */}
+    <div className="flex justify-between w-full px-4 text-gray-300 text-sm">
+      <span>{currentTime}</span>
+      <span>{duration}</span>
+    </div>
 
-      <audio ref={audioRef} className="hidden" />
+    {/* Seek bar for progress */}
+    <input
+      type="range"
+      min="0"
+      max="100"
+      value={progress}
+      onChange={handleSeek}
+      className="w-full my-2 accent-purple-500"
+    />
+
+    <div className="flex gap-5">
+      <button onClick={handlePrev} className="bg-gray-700 p-3 rounded-full">
+        <FaBackward size={20} />
+      </button>
+      <button
+        onClick={() => handlePlay(playingIndex)}
+        className="bg-purple-500 p-3 rounded-full"
+      >
+        {isPlaying ? <FaPause size={24} /> : <FaPlay size={24} />}
+      </button>
+      <button onClick={handleNext} className="bg-gray-700 p-3 rounded-full">
+        <FaForward size={20} />
+      </button>
+    </div>
+  </div>
+)}
+
     </div>
   );
 }
