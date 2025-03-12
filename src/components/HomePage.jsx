@@ -10,31 +10,46 @@ export default function HomePage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState("0:00");
-  const [duration, setDuration] = useState("0:00");
+  const [durations, setDurations] = useState({}); // Store duration of each song
   const audioRef = useRef(null);
   const navigate = useNavigate();
 
+  // Fetch songs and preload their durations
   useEffect(() => {
     fetch(`${import.meta.env.VITE_APP_API_BASE_URL}/songs`)
       .then((res) => res.json())
-      .then((data) => {
+      .then(async (data) => {
         setSongs(data);
         setFilteredSongs(data);
+
+        // Load song durations
+        const durationMap = {};
+        for (const song of data) {
+          durationMap[song._id] = await getSongDuration(song.fileUrl);
+        }
+        setDurations(durationMap);
       });
   }, []);
 
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.addEventListener("timeupdate", () => {
-        setProgress((audioRef.current.currentTime / audioRef.current.duration) * 100);
-        setCurrentTime(formatTime(audioRef.current.currentTime));
+  // Function to get duration of a song without playing it
+  const getSongDuration = (fileUrl) => {
+    return new Promise((resolve) => {
+      const tempAudio = new Audio(fileUrl);
+      tempAudio.addEventListener("loadedmetadata", () => {
+        resolve(formatTime(tempAudio.duration));
       });
+    });
+  };
 
-      audioRef.current.addEventListener("loadedmetadata", () => {
-        setDuration(formatTime(audioRef.current.duration));
-      });
-    }
-  }, [playingIndex]);
+  // Update filtered songs when search input changes
+  useEffect(() => {
+    setFilteredSongs(
+      songs.filter((song) =>
+        song.title.toLowerCase().includes(search.toLowerCase()) ||
+        song.artist.toLowerCase().includes(search.toLowerCase())
+      )
+    );
+  }, [search, songs]);
 
   const formatTime = (time) => {
     if (!time || isNaN(time)) return "0:00";
@@ -76,10 +91,10 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-gray-900">
+    <div className="min-h-screen bg-white text-gray-900 mb-20">
       <section className="text-center py-10 px-4 flex flex-col items-center">
         <h1 className="text-4xl sm:text-6xl font-extrabold mb-4 text-gray-800">
-          Music<span className="text-purple-500">Mania</span>
+          Music<span className="text-cyan-500">Mania</span>
         </h1>
         <p className="text-sm sm:text-lg text-gray-600 mb-6">
           Discover, Play, Upload, and Download your favorite music effortlessly.
@@ -92,7 +107,7 @@ export default function HomePage() {
             onChange={(e) => setSearch(e.target.value)}
             className="w-full bg-transparent text-gray-700 px-4 outline-none"
           />
-          <button className="bg-purple-500 hover:bg-purple-600 p-3 rounded-full text-white">
+          <button className="bg-gray-500 hover:bg-purple-600 p-3 rounded-full text-white">
             <FaSearch size={20} />
           </button>
         </div>
@@ -105,11 +120,11 @@ export default function HomePage() {
             filteredSongs.map((song, index) => (
               <div
                 key={song._id}
-                className="bg-gradient-to-br from-blue-400 to-purple-400 text-white p-5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-pointer"
+                className="bg-cyan-500 text-white p-5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-pointer"
                 onClick={() => handlePlay(index)}
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 flex items-center justify-center bg-purple-500 rounded-full">
+                  <div className="w-16 h-16 flex items-center justify-center bg-black rounded-full">
                     {playingIndex === index && isPlaying ? (
                       <FaPause size={28} />
                     ) : (
@@ -119,14 +134,14 @@ export default function HomePage() {
                   <div>
                     <h3 className="text-lg font-semibold">{song.title}</h3>
                     <p className="text-gray-800 text-sm font-semibold">{song.artist}</p>
-                    <p className="text-gray-600 text-sm font-semibold">{duration}</p>
+                    <p className="text-gray-600 text-sm font-semibold">{durations[song._id] || "Loading..."}</p>
                   </div>
                 </div>
                 <div className="mt-4 flex justify-end">
                   <a
                     href={song.fileUrl}
                     download
-                    className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg flex items-center shadow-md"
+                    className="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg flex items-center shadow-md"
                   >
                     <FaDownload className="mr-2" /> Download
                   </a>
@@ -134,7 +149,7 @@ export default function HomePage() {
               </div>
             ))
           ) : (
-            <p className="text-center text-gray-500">No songs found</p>
+            <div className="flex mx-auto justify-center   font-bold text-2xl text-center text-yellow-500">Loading.....</div>
           )}
         </div>
       </section>
@@ -165,7 +180,7 @@ export default function HomePage() {
                 <FaForward size={20} />
               </button>
             </div>
-            <span className="text-gray-300 text-sm">{duration}</span>
+            <span className="text-gray-300 text-sm">{durations[filteredSongs[playingIndex]?._id] || "0:00"}</span>
           </div>
         </div>
       )}

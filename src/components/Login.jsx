@@ -58,8 +58,10 @@ const Login = () => {
             } else if (error) {
                 const details = error?.details[0]?.message || "An error occurred";
                 handleError(details);
+                setLoggedIn(false);
             } else {
                 handleError(message);
+                setLoggedIn(false);
             }
         } catch (error) {
             setLoading(false);

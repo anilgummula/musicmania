@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { FaSearch, FaDownload, FaPlay, FaPause, FaForward, FaBackward } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-export default function HomePage2() {
+export default function HomePage() {
   const [search, setSearch] = useState("");
   const [songs, setSongs] = useState([]);
   const [filteredSongs, setFilteredSongs] = useState([]);
@@ -118,8 +118,8 @@ export default function HomePage2() {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold">{song.title}</h3>
-                    <p className="text-gray-400 text-sm">{song.artist}</p>
-                    <p className="text-gray-300 text-sm">{duration}</p>
+                    <p className="text-gray-800 text-sm font-semibold">{song.artist}</p>
+                    <p className="text-gray-600 text-sm font-semibold">{duration}</p>
                   </div>
                 </div>
                 <div className="mt-4 flex justify-end">

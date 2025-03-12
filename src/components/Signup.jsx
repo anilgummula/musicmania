@@ -57,13 +57,16 @@ const Signup = () => {
         else if(error){
             const details = error?.details[0].message;
             handleError(details);
+            setLoading(false);
         }
         else if(!success){
             handleError(message);
+            setLoading(false);
         }
         console.log(result);
     } catch (err) {
-            handleError(err);
+        handleError(err);
+        setLoading(false);
             
       }
     }

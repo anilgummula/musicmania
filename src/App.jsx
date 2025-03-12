@@ -1,5 +1,8 @@
 import React from 'react';
-import {createBrowserRouter,RouterProvider} from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { ToastContainer } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
 import NavBar from './components/NavBar'
 import Home from './components/Home';
 import Footer from './components/Footer';
@@ -81,6 +84,7 @@ function App() {
   return (
     <>
         <RouterProvider router={router}/>
+        <ToastContainer position="top-right" autoClose={3000} />
     </>
   )
 }
