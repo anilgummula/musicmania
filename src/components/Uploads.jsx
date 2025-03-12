@@ -3,8 +3,9 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 import { handleError, handleSuccess } from "../utils";
 
 export default function Uploads() {
+    const username = localStorage.getItem("loggedInUser");
+    const [artist, setArtist] = useState(username);
   const [songTitle, setSongTitle] = useState("");
-  const [artist, setArtist] = useState("");
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState("");
   const fileInputRef = useRef(null); // Reference for file input
@@ -29,7 +30,7 @@ export default function Uploads() {
 
     const formData = new FormData();
     formData.append("title", songTitle);
-    formData.append("artist", artist);
+    formData.append("artist", username);
     formData.append("file", file);
 
     const token =  localStorage.getItem("token");
