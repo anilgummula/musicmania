@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { handleError, handleSuccess } from "../utils";
+import { useNavigate } from "react-router-dom";
 
 export default function Uploads() {
     const [songTitle, setSongTitle] = useState("");
@@ -9,6 +10,8 @@ export default function Uploads() {
     const [preview, setPreview] = useState("");
     const fileInputRef = useRef(null); // Reference for file input
     const [loading,setLoading] = useState(false);
+
+    const navigate = useNavigate();
     
     const handleFileChange = (event) => {
         const uploadedFile = event.target.files[0];
@@ -53,9 +56,14 @@ export default function Uploads() {
     if (response.ok) {
       handleSuccess("Song uploaded successfully!");
       setSongTitle("");
-      setArtist("");
+    //   setArtist("");
       setFile(null);
       setPreview("");
+      setLoading(false);
+      setTimeout(() => {
+        navigate("/");
+    }, 1000);
+
     } else {
       handleError("Upload failed. Please try again.");
       setLoading(false);
