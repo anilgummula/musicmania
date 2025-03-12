@@ -47,9 +47,12 @@ const Signup = () => {
             body : JSON.stringify({username,email,password})
         });
         const result = await response.json();
-        const {success ,message ,error } = result;
+        const {success ,message ,error,jwtToken } = result;
         if(success){
             handleSuccess(message);
+            
+            localStorage.setItem("token", jwtToken);
+            localStorage.setItem("loggedInUser", username);
             setTimeout(() => {
                 navigate("/login")
             }, 1000);
