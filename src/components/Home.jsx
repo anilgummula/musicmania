@@ -7,12 +7,13 @@ const Home = () => {
     const {loggedIn} = useContext(AllContext);
   return (
     <div className='mt-16 min-h-screen'>
-        {!loggedIn?(
+        {/* {!loggedIn?(
             <Landingpage/>
         )
         :(
             <HomePage/>
-        ) }
+        ) } */}
+        <HomePage/>
     </div>
   )
 }
