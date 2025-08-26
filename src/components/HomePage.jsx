@@ -122,7 +122,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-white text-gray-900 mb-20">
       <section className="text-center py-10 px-4 flex flex-col items-center">
         <h1 className="text-4xl sm:text-6xl font-extrabold mb-4 text-gray-800">
-          Music<span className="text-cyan-500">Mania</span>
+          Music<span className="text-gray-400">Mania</span>
         </h1>
         <p className="text-sm sm:text-lg text-gray-600 mb-6">
           Discover, Play, Upload, and Download your favorite music effortlessly.
@@ -142,13 +142,13 @@ export default function HomePage() {
       </section>
 
       <section className="px-6 py-6 max-w-6xl mx-auto">
-        <h2 className="flex text-2xl sm:text-3xl font-bold mb-4 text-gray-500 p-5">Trending Songs</h2>
+        {/* <h2 className="flex text-2xl sm:text-3xl font-bold mb-4 text-gray-500 p-5"></h2> */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {filteredSongs.length > 0 ? (
             filteredSongs.map((song, index) => (
               <div
                 key={song._id}
-                className="bg-cyan-500 text-white p-5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-pointer"
+                className="bg-gray-400 text-white p-5 rounded-xl shadow-lg hover:scale-105 transition-transform cursor-pointer"
                 onClick={() => handlePlay(index)}
               >
                 <div className="flex items-center gap-4">
@@ -177,7 +177,7 @@ export default function HomePage() {
               </div>
             ))
           ) : (
-            <div className="flex mx-auto justify-center font-bold text-2xl text-center text-yellow-500">
+            <div className="flex mx-auto justify-center font-bold text-2xl text-center text-neutral-600">
               Loading...
             </div>
           )}
@@ -185,7 +185,7 @@ export default function HomePage() {
       </section>
 
       {playingIndex !== null && (
-  <div className="fixed bottom-0 left-0 w-full bg-gray-900 text-white p-5 flex flex-col items-center shadow-2xl">
+  <div className="fixed bottom-0 left-0 w-full bg-black text-white p-4 flex flex-col items-center shadow-2xl">
     <h3 className="text-lg font-semibold">
       {filteredSongs[playingIndex]?.title} - {filteredSongs[playingIndex]?.artist}
     </h3>
@@ -203,20 +203,20 @@ export default function HomePage() {
       max="100"
       value={progress}
       onChange={handleSeek}
-      className="w-full my-2 accent-purple-500"
+      className="w-full my-2 accent-white"
     />
 
     <div className="flex gap-5">
-      <button onClick={handlePrev} className="bg-gray-700 p-3 rounded-full">
+      <button onClick={handlePrev} className="bg-gray-800 p-3 rounded-full">
         <FaBackward size={20} />
       </button>
       <button
         onClick={() => handlePlay(playingIndex)}
-        className="bg-purple-500 p-3 rounded-full"
+        className="bg-gray-500 p-3 rounded-full"
       >
         {isPlaying ? <FaPause size={24} /> : <FaPlay size={24} />}
       </button>
-      <button onClick={handleNext} className="bg-gray-700 p-3 rounded-full">
+      <button onClick={handleNext} className="bg-gray-800 p-3 rounded-full">
         <FaForward size={20} />
       </button>
     </div>

@@ -36,7 +36,7 @@ function NavBar() {
       <div className="flex justify-between items-center px-6 h-16">
         {/* Logo */}
         <h1 className="font-bold text-xl">
-          Music<span className="text-blue-400">Mania</span>
+          Music<span className="text-gray-400">Mania</span>
         </h1>
 
         {/* Desktop Navigation */}
@@ -108,7 +108,7 @@ function NavBar() {
         } transition-transform duration-300 ease-in-out`}
       >
         <div className="flex justify-between items-center p-5 border-b">
-          <h2 className="text-2xl font-semibold text-gray-800"><span className="font-bold">So</span><span className="text-blue-500 font-bold" >up</span></h2>
+          <h2 className="text-2xl font-semibold text-gray-800"><span className="font-bold">Music</span><span className="text-gray-400 font-bold" >Mania</span></h2>
           <button
             onClick={() => setMenu(false)}
             className="text-gray-800 hover:text-gray-600 focus:outline-none"

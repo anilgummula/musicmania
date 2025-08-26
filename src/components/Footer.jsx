@@ -10,16 +10,16 @@ function Footer() {
             
             {/* Social Media Links */}
             <div className="flex space-x-6 text-2xl mb-8">
-              <a href="https://facebook.com" className="hover:text-blue-600 transition duration-300">
+              <a href="https://in.linkedin.com/in/anil-gummula" className="hover:text-blue-600 transition duration-300">
                 <FaFacebook />
               </a>
-              <a href="https://twitter.com" className="hover:text-blue-400 transition duration-300">
+              <a href="https://in.linkedin.com/in/anil-gummula" className="hover:text-blue-400 transition duration-300">
                 <FaTwitter />
               </a>
-              <a href="https://instagram.com" className="hover:text-pink-500 transition duration-300">
+              <a href="https://in.linkedin.com/in/anil-gummula" className="hover:text-pink-500 transition duration-300">
                 <FaInstagram />
               </a>
-              <a href="https://linkedin.com" className="hover:text-blue-700 transition duration-300">
+              <a href="https://in.linkedin.com/in/anil-gummula" className="hover:text-blue-700 transition duration-300">
                 <FaLinkedin />
               </a>
             </div>
